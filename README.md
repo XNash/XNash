@@ -4,9 +4,7 @@
   <p>
     <img src="https://github.com/XNash/XNash/blob/main/xynorash_logo.png?raw=true" alt="Xynorash Logo" width="160" align="center" style="display: inline-block; vertical-align: middle;" />
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="https://daily.dev/xynorash" target="_blank" rel="noopener noreferrer">
-      <img src="https://api.daily.dev/devcards/v2/ujWPdmiVVp2MF1Mf4u33v.png?type=default&r=zj3" width="350" alt="Nash Tefison's Dev Card" align="center" style="display: inline-block; vertical-align: middle;" />
-    </a>
+    <a href="https://daily.dev/xynorash" target="_blank" rel="noopener noreferrer"><img src="https://api.daily.dev/devcards/v2/ujWPdmiVVp2MF1Mf4u33v.png?type=default&r=zj3" width="350" alt="Nash Tefison's Dev Card" align="center" style="display: inline-block; vertical-align: middle;" /></a>
   </p>
 
   <br />
@@ -17,22 +15,11 @@
   <br />
   <br />
 
-  <!-- Core Tech Stack -->
+  <!-- Core Tech Stack (All links touching to prevent underline artifacts) -->
   <h3>🛠️ Core Tech Stack</h3>
 
   <p>
-    <a href="https://neovim.io/" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white" alt="Neovim" />
-    </a>
-    <a href="https://www.rust-lang.org/" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
-    </a>
-    <a href="https://flutter.dev/" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
-    </a>
-    <a href="https://omarchy.org/" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/badge/Omarchy-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Omarchy" />
-    </a>
+    <a href="https://neovim.io/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Neovim-57A143?style=for-the-badge&logo=neovim&logoColor=white" alt="Neovim" /></a> <a href="https://www.rust-lang.org/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" /></a> <a href="https://flutter.dev/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" /></a> <a href="https://omarchy.org/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Omarchy-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white" alt="Omarchy" /></a>
   </p>
 
 </div>
