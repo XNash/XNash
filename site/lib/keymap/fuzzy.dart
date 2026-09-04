@@ -24,6 +24,9 @@ List<int> fuzzyRank(String query, List<String> candidates) {
       scored.add((first! + gaps, i));
     }
   }
-  scored.sort((a, b) => a.$1.compareTo(b.$1));
+  scored.sort((a, b) {
+    final byScore = a.$1.compareTo(b.$1);
+    return byScore != 0 ? byScore : a.$2.compareTo(b.$2);
+  });
   return scored.map((s) => s.$2).toList();
 }
