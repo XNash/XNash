@@ -34,6 +34,7 @@ class Bufferline extends StatelessWidget {
                 final b = kBuffers[i];
                 final active = i == state.bufferIndex;
                 return InkWell(
+                  hoverColor: t.bgHighlight,
                   onTap: () => state.openBuffer(i),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),

@@ -28,6 +28,7 @@ class NeoTree extends StatelessWidget {
             final active = i == state.bufferIndex;
             final connector = i == kBuffers.length - 1 ? '└─' : '├─';
             return InkWell(
+              hoverColor: t.bgHighlight,
               onTap: () {
                 state.openBuffer(i);
                 onSelect(i);

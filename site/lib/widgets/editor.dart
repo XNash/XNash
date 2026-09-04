@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../models/project.dart';
@@ -20,6 +22,8 @@ class _EditorPaneState extends State<EditorPane> {
   final _scroll = ScrollController();
   int _lastLine = 0;
   int _lastBuffer = 0;
+  bool _cursorOn = true;
+  Timer? _blink;
 
   @override
   void initState() {
@@ -27,10 +31,14 @@ class _EditorPaneState extends State<EditorPane> {
     _lastBuffer = widget.state.bufferIndex;
     _lastLine = widget.state.scrollLines;
     widget.state.addListener(_onState);
+    _blink = Timer.periodic(const Duration(milliseconds: 530), (_) {
+      if (mounted) setState(() => _cursorOn = !_cursorOn);
+    });
   }
 
   @override
   void dispose() {
+    _blink?.cancel();
     widget.state.removeListener(_onState);
     _scroll.dispose();
     super.dispose();
@@ -102,43 +110,56 @@ class _EditorPaneState extends State<EditorPane> {
             ]);
           }
           final line = lines[i];
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 56,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Text('${i + 1}',
-                      textAlign: TextAlign.right, style: mono(t.lineNr)),
+          final isCursorLine = i == s.scrollLines;
+          return Container(
+            color: isCursorLine
+                ? t.bgHighlight.withValues(alpha: 0.55)
+                : null,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 56,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Text('${i + 1}',
+                        textAlign: TextAlign.right,
+                        style: mono(isCursorLine ? t.accent : t.lineNr)),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      for (final span in line.spans)
-                        span.url == null
-                            ? TextSpan(
-                                text: span.text,
-                                style: _tokStyle(span.tok, t))
-                            : WidgetSpan(
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () => io.openUrl(span.url!),
-                                    child: Text(span.text,
-                                        style: _tokStyle(span.tok, t)),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        for (final span in line.spans)
+                          span.url == null
+                              ? TextSpan(
+                                  text: span.text,
+                                  style: _tokStyle(span.tok, t))
+                              : WidgetSpan(
+                                  child: MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () => io.openUrl(span.url!),
+                                      child: Text(span.text,
+                                          style: _tokStyle(span.tok, t)),
+                                    ),
                                   ),
                                 ),
-                              ),
-                    ],
+                        if (isCursorLine)
+                          TextSpan(
+                            text: '▊',
+                            style: mono(t.fg.withValues(
+                                alpha: _cursorOn ? 0.9 : 0.0)),
+                          ),
+                      ],
+                    ),
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
                   ),
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

@@ -16,15 +16,25 @@ class TelescopeOverlay extends StatelessWidget {
         results.isEmpty ? -1 : state.finderSelection.clamp(0, results.length - 1);
 
     return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 560),
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          color: t.bgDark,
-          border: Border.all(color: t.bgHighlight),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Column(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            constraints: const BoxConstraints(maxWidth: 560),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: t.bgDark,
+              border: Border.all(color: t.muted.withValues(alpha: 0.6)),
+              borderRadius: BorderRadius.circular(6),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -71,7 +81,19 @@ class TelescopeOverlay extends StatelessWidget {
                   style: mono(t.muted, size: 11)),
             ),
           ],
-        ),
+            ),
+          ),
+          Positioned(
+            top: -8,
+            left: 40,
+            child: Container(
+              color: t.bgDark,
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text('Find Files',
+                  style: mono(t.accent, size: 11, weight: FontWeight.w700)),
+            ),
+          ),
+        ],
       ),
     );
   }

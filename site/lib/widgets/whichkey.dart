@@ -13,14 +13,27 @@ class WhichKeyOverlay extends StatelessWidget {
 
     Widget row(String key, String label, VoidCallback onTap) => InkWell(
           onTap: onTap,
+          hoverColor: t.bgHighlight,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
             child: Row(
               children: [
                 SizedBox(
-                  width: 44,
-                  child: Text(key,
-                      style: mono(t.accent, size: 12, weight: FontWeight.w700)),
+                  width: 52,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: t.bgHighlight,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(key,
+                          style: mono(t.accent,
+                              size: 11, weight: FontWeight.w700)),
+                    ),
+                  ),
                 ),
                 Text('→ ', style: mono(t.muted, size: 12)),
                 Text(label, style: mono(t.fg, size: 12)),

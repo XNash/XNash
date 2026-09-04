@@ -41,7 +41,8 @@ void main() {
     expect(find.textContaining('heaplens_protocol', findRichText: true),
         findsOneWidget);
     s.handleKey('G'); // stats line is appended at the bottom of the buffer
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     expect(find.textContaining('★ 0', findRichText: true), findsOneWidget);
     expect(find.textContaining('last push 2026-07-28', findRichText: true),
         findsOneWidget);
