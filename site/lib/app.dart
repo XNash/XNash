@@ -1,0 +1,136 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'keymap/dispatcher.dart';
+import 'services/github_stats.dart';
+import 'state/app_state.dart';
+import 'theme/theme_controller.dart';
+import 'widgets/bufferline.dart';
+import 'widgets/cmdline.dart';
+import 'widgets/editor.dart';
+import 'widgets/neotree.dart';
+import 'widgets/statusline.dart';
+import 'widgets/telescope.dart';
+import 'widgets/whichkey.dart';
+
+class XnashApp extends StatelessWidget {
+  const XnashApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'XNash — Xynorash',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(brightness: Brightness.dark, useMaterial3: true),
+      home: const Shell(),
+    );
+  }
+}
+
+class Shell extends StatefulWidget {
+  const Shell({super.key});
+
+  @override
+  State<Shell> createState() => _ShellState();
+}
+
+class _ShellState extends State<Shell> {
+  late final AppState state;
+  final _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    state = AppState(theme: ThemeController(), github: GithubStats());
+    state.loadStats();
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    state.dispose();
+    super.dispose();
+  }
+
+  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent) return KeyEventResult.ignored;
+    final key = switch (event.logicalKey) {
+      LogicalKeyboardKey.escape => 'Escape',
+      LogicalKeyboardKey.enter => 'Enter',
+      LogicalKeyboardKey.backspace => 'Backspace',
+      LogicalKeyboardKey.arrowDown => 'ArrowDown',
+      LogicalKeyboardKey.arrowUp => 'ArrowUp',
+      _ => (event.character != null && event.character!.length == 1)
+          ? event.character!
+          : '',
+    };
+    if (key.isEmpty) return KeyEventResult.ignored;
+    state.handleKey(key);
+    return KeyEventResult.handled;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final wide = MediaQuery.sizeOf(context).width >= 800;
+    return Focus(
+      focusNode: _focus,
+      autofocus: true,
+      onKeyEvent: _onKey,
+      child: GestureDetector(
+        onTap: _focus.requestFocus,
+        child: AnimatedBuilder(
+          animation: state,
+          builder: (context, _) {
+            final t = state.themeController.theme;
+            final showTree = wide || state.explorerOpen;
+            return Scaffold(
+              backgroundColor: t.bg,
+              body: Column(
+                children: [
+                  Bufferline(state: state, showExplorerToggle: !wide),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        if (showTree)
+                          NeoTree(
+                            state: state,
+                            onSelect: (_) {
+                              if (!wide) state.toggleExplorer();
+                            },
+                          ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              EditorPane(state: state),
+                              if (state.mode == UiMode.whichkey ||
+                                  state.mode == UiMode.finder) ...[
+                                Positioned.fill(
+                                  child: GestureDetector(
+                                    onTap: state.closeOverlay,
+                                    child: Container(
+                                        color: Colors.black.withValues(
+                                            alpha: 0.35)),
+                                  ),
+                                ),
+                                if (state.mode == UiMode.whichkey)
+                                  WhichKeyOverlay(state: state),
+                                if (state.mode == UiMode.finder)
+                                  TelescopeOverlay(state: state),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Statusline(state: state),
+                  CmdlineBar(state: state),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
