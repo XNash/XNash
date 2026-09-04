@@ -31,11 +31,32 @@
 
   <title>XNash — Xynorash</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    body { background: #13161c; margin: 0; }
+    #splash {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      color: #4a5366; font: 13px monospace; z-index: 1;
+    }
+    #splash .bar {
+      width: 160px; height: 3px; background: #242830; overflow: hidden;
+      border-radius: 2px;
+    }
+    #splash .bar::after {
+      content: ""; display: block; width: 40%; height: 100%;
+      background: #ad523c; animation: slide 1s ease-in-out infinite alternate;
+    }
+    @keyframes slide { from { margin-left: 0 } to { margin-left: 60% } }
+  </style>
 </head>
-<body style="background-color: #1a1d24;">
+<body>
+  <div id="splash"><div>xynovim · loading buffers…</div><div class="bar"></div></div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var s = document.getElementById('splash');
+      if (s) s.remove();
+    });
+  </script>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
