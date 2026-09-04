@@ -6,6 +6,7 @@ import 'services/github_stats.dart';
 import 'state/app_state.dart';
 import 'theme/theme_controller.dart';
 import 'widgets/bufferline.dart';
+import 'widgets/dashboard.dart';
 import 'widgets/cmdline.dart';
 import 'widgets/editor.dart';
 import 'widgets/neotree.dart';
@@ -83,50 +84,77 @@ class _ShellState extends State<Shell> {
           builder: (context, _) {
             final t = state.themeController.theme;
             final showTree = wide || state.explorerOpen;
-            return Scaffold(
-              backgroundColor: t.bg,
-              body: Column(
-                children: [
-                  Bufferline(state: state, showExplorerToggle: !wide),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        if (showTree)
-                          NeoTree(
-                            state: state,
-                            onSelect: (_) {
-                              if (!wide) state.toggleExplorer();
-                            },
-                          ),
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              EditorPane(state: state),
-                              if (state.mode == UiMode.whichkey ||
-                                  state.mode == UiMode.finder) ...[
-                                Positioned.fill(
-                                  child: GestureDetector(
-                                    onTap: state.closeOverlay,
-                                    child: Container(
-                                        color: Colors.black.withValues(
-                                            alpha: 0.35)),
-                                  ),
-                                ),
-                                if (state.mode == UiMode.whichkey)
-                                  WhichKeyOverlay(state: state),
-                                if (state.mode == UiMode.finder)
-                                  TelescopeOverlay(state: state),
-                              ],
-                            ],
-                          ),
+            final window = Column(
+              children: [
+                Bufferline(state: state, showExplorerToggle: !wide),
+                Expanded(
+                  child: Row(
+                    children: [
+                      if (showTree)
+                        NeoTree(
+                          state: state,
+                          onSelect: (_) {
+                            if (!wide) state.toggleExplorer();
+                          },
                         ),
-                      ],
-                    ),
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            if (state.buffer.id == 'welcome')
+                              Dashboard(state: state)
+                            else
+                              EditorPane(state: state),
+                            if (state.mode == UiMode.whichkey ||
+                                state.mode == UiMode.finder) ...[
+                              Positioned.fill(
+                                child: GestureDetector(
+                                  onTap: state.closeOverlay,
+                                  child: Container(
+                                      color: Colors.black
+                                          .withValues(alpha: 0.35)),
+                                ),
+                              ),
+                              if (state.mode == UiMode.whichkey)
+                                WhichKeyOverlay(state: state),
+                              if (state.mode == UiMode.finder)
+                                TelescopeOverlay(state: state),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  Statusline(state: state),
-                  CmdlineBar(state: state),
-                ],
-              ),
+                ),
+                Statusline(state: state),
+                CmdlineBar(state: state),
+              ],
+            );
+            // Hyprland-style tiled window: gap, focused border, shadow.
+            return Scaffold(
+              backgroundColor: t.desktopBg,
+              body: wide
+                  ? Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: t.accent.withValues(alpha: 0.55)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.45),
+                              blurRadius: 40,
+                              offset: const Offset(0, 12),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(9),
+                          child: window,
+                        ),
+                      ),
+                    )
+                  : window,
             );
           },
         ),

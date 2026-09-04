@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const kMonoFamily = 'JetBrains Mono';
-const kMonoFallback = ['Cascadia Code', 'Fira Code', 'monospace'];
+const kMonoFamily = 'JetBrainsMonoNF';
+const kMonoFallback = ['monospace'];
 
 TextStyle mono(
   Color color, {

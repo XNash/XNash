@@ -13,36 +13,50 @@ class Statusline extends StatelessWidget {
     final total = state.buffer.lines.length;
     final line = state.scrollLines + 1;
     final pct = total <= 1 ? 100 : ((line / total) * 100).round();
+
+    Widget seg(String text, Color fg, Color bg,
+            {FontWeight weight = FontWeight.w400}) =>
+        Container(
+          color: bg,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          alignment: Alignment.center,
+          child: Text(text,
+              style: mono(fg, size: 11, weight: weight),
+              overflow: TextOverflow.ellipsis),
+        );
+
+    // Powerline separators: fg is the segment being left, bg the one entered.
+    Widget sepR(Color from, Color to) => Container(
+          color: to,
+          alignment: Alignment.center,
+          child: Text('\u{e0b0}', style: mono(from, size: 14)),
+        );
+    Widget sepL(Color from, Color to) => Container(
+          color: from,
+          alignment: Alignment.center,
+          child: Text('\u{e0b2}', style: mono(to, size: 14)),
+        );
+
     return Container(
       color: t.bgHighlight,
       height: 26,
-      padding: const EdgeInsets.only(right: 10),
       child: Row(
         children: [
-          Container(
-            color: t.accent,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            alignment: Alignment.center,
-            child: Text('NORMAL',
-                style: mono(t.bgDark, size: 11, weight: FontWeight.w700)),
-          ),
-          const SizedBox(width: 10),
-          Text('\u{e725} main', style: mono(t.fgDim, size: 11)),
-          const SizedBox(width: 14),
+          seg('NORMAL', t.bgDark, t.accent, weight: FontWeight.w700),
+          sepR(t.accent, t.bgHighlight),
+          seg('\u{e725} main', t.fgDim, t.bgHighlight),
+          sepR(t.bgHighlight, t.bg),
           Flexible(
-            child: Text(
-              '${state.buffer.icon} ${state.buffer.fileName}',
-              style: mono(t.fg, size: 11),
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: seg('${state.buffer.icon} ${state.buffer.fileName}',
+                t.fg, t.bg),
           ),
-          const Spacer(),
-          Text('\u{f043b} ${state.themeController.name}',
-              style: mono(t.purple, size: 11)),
-          const SizedBox(width: 14),
-          Text('☰ $line:1', style: mono(t.fgDim, size: 11)),
-          const SizedBox(width: 10),
-          Text('$pct%', style: mono(t.fgDim, size: 11)),
+          Expanded(child: Container(color: t.bg)),
+          sepL(t.bg, t.bgHighlight),
+          seg('\u{f043b} ${state.themeController.name}', t.purple,
+              t.bgHighlight),
+          sepL(t.bgHighlight, t.accent),
+          seg('☰ $line:1  $pct%', t.bgDark, t.accent,
+              weight: FontWeight.w700),
         ],
       ),
     );

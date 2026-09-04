@@ -166,6 +166,17 @@ class AppState extends ChangeNotifier {
       }
     }
 
+    // Dashboard shortcuts: on the welcome buffer, digits open projects,
+    // `a` opens about, `t` cycles the theme (mirrors the dashboard entries).
+    if (mode == UiMode.normal && bufferIndex == 0 && dispatcher.pending.isEmpty) {
+      final digit = int.tryParse(key);
+      if (digit != null && digit >= 1 && digit < kBuffers.length - 1) {
+        return openBuffer(digit);
+      }
+      if (key == 'a') return openBuffer(kBuffers.length - 1);
+      if (key == 't') return cycleTheme();
+    }
+
     final intent = dispatcher.feed(key, mode);
     if (intent == null) {
       notifyListeners(); // pending keys may have changed; cmdline hint updates
